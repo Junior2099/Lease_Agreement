@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Contrato de Locação</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+</head>
+<body>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+    </style>
+    <div class="container">
+        <h1>Contrato de Locação</h1>
+        <form id="contratoForm">
+            <label for="nomeProprietario">Nome do Proprietário:</label>
+            <input type="text" id="nomeProprietario" required>
+
+            <label for="paisProprietario">País onde nasceu o Proprietário:</label>
+            <input type="text" id="paisProprietario" required>
+
+            <label for="cpfProprietario">CPF/CIN do Proprietário:</label>
+            <input type="text" id="cpfProprietario" required>
+
+            <label for="nomeInquilino">Nome do Inquilino:</label>
+            <input type="text" id="nomeInquilino" required>
+
+            <label for="cpfInquilino">CPF/CIN do Inquilino:</label>
+            <input type="text" id="cpfInquilino" required>
+
+            <label for="enderecoImovel">Endereço do Imóvel:</label>
+            <input type="text" id="enderecoImovel" placeholder="Rua, Avenida, etc." required>
+
+            <label for="numeroImovel">Número:</label>
+            <input type="text" id="numeroImovel" required>
+
+            <label for="bairro">Bairro:</label>
+            <input type="text" id="bairro" required>
+
+            <label for="cep">CEP:</label>
+            <input type="text" id="cep" required>
+
+            <label for="prazoLocacao">Prazo de Locação (anos):</label>
+            <input type="number" id="prazoLocacao" required>
+
+            <label for="dataInicio">Data de Início:</label>
+            <input type="date" id="dataInicio" required>
+
+            <label for="dataTermino">Data de Término:</label>
+            <input type="date" id="dataTermino" required>
+
+            <label for="valorAluguel">Valor do Aluguel (R$):</label>
+            <input type="text" id="valorAluguel" required>
+
+            <label for="diaPagamento">Dia de Pagamento:</label>
+            <input type="number" id="diaPagamento" required>
+
+            <button type="button" onclick="gerarPDF()">Gerar PDF</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+
+
+$(document).ready(function () {
+    $('#cpfProprietario, #cpfInquilino').mask('000.000.000-00');
+    $('#cep').mask('00000-000');
+    $('#valorAluguel').mask('R$ 000.000,00', { reverse: true });
+});
+
+function gerarPDF() {
+    const doc = new jsPDF();
+
+  
+    const nomeProprietario = document.getElementById('nomeProprietario').value;
+    const paisProprietario = document.getElementById('paisProprietario').value;
+    const cpfProprietario = document.getElementById('cpfProprietario').value;
+    const nomeInquilino = document.getElementById('nomeInquilino').value;
+    const cpfInquilino = document.getElementById('cpfInquilino').value;
+    const enderecoImovel = document.getElementById('enderecoImovel').value;
+    const numeroImovel = document.getElementById('numeroImovel').value;
+    const bairro = document.getElementById('bairro').value;
+    const cep = document.getElementById('cep').value;
+    const prazoLocacao = document.getElementById('prazoLocacao').value;
+    const dataInicio = formatarData(document.getElementById('dataInicio').value);
+    const dataTermino = formatarData(document.getElementById('dataTermino').value);
+    const valorAluguel = document.getElementById('valorAluguel').value;
+    const diaPagamento = document.getElementById('diaPagamento').value;
+
+  
+    const contrato = `
+        Os signatários deste instrumento, de um lado ${nomeProprietario}, ${paisProprietario}, Portador do CPF/CIN: ${cpfProprietario}, e do outro lado a ${nomeInquilino}, Portador(a) do CPF/CIN: ${cpfInquilino}, Tem justo contrato na forma de direito, o seguinte, que mutuamente aceitam e outorgam, a saber:
+
+        Clausula 1º: O segundo nomeado, aqui chamado "locatário", sendo inquilino de um imóvel residencial, situado: ${enderecoImovel}, Nº ${numeroImovel}, Bairro: ${bairro}, - SÃO PAULO - CEP: ${cep}, loca-o ao segundo, aqui chamado DE "o locatário".
+
+        Clausula 2º: O prazo de locação é ${prazoLocacao} ANO(s), a partir do dia ${dataInicio}, e tem término no dia ${dataTermino}.
+
+        Clausula 3º: O aluguel é de ${valorAluguel}, que o locatário se compromete a pagar pontualmente todos os dias ${diaPagamento} de cada mês. O locatário comprometesse a pagar conta de água e luz.
+
+        Parágrafo PRIMEIRO- O não pagamento do aluguel, com atraso a longo prazo, o LOCADOR poderá considerar o depósito de antecipação como gozado e dar ordem de despejo ao LOCATÁRIO.
+
+        Parágrafo SEGUNDO- Caso o LOCADOR solicite a desocupação do imóvel, antes do término do contrato, sem justificativa prévia e fora do acordado nas cláusulas, o valor de depósito de antecipação deverá ser restituido ao LOCATÁRIO.
+
+        Clausula 4º: Obriga-se mais o locatário a satisfazer a todas as exigências dos poderes públicos a que der causa e a não transferir este contrato, nem fazer modificações ou transformações no imóvel sem a autorização escrito do locador.
+
+        Clausula 5º O locatário também não poderá sublocar nem emprestar o imóvel, no todo ou em partes sem prévia consentimento por escrito do locador, devendo, no caso de ser dado o consentimento, previdência devida e oportunamente junto aos ocupantes, a fim de que a casa esteja desimpedida no termo do presente contrato.
+
+        Clausula 6º: Em caso demora no pagamento do aluguel, será aplicada uma multa de 10% (Dez por cento) sobre o valor devido e juros mensais de 3% (por cento) do montante devido.
+
+        Clausula 7º: A infração de qualquer das cláusulas do presente contrato, sujeita o infrator à multa de duas vezes o valor do aluguel, tomando-se por base, o último aluguel vencido.
+
+        Clausula 8º: O imóvel terá um reajuste anual conforte a lei.
+
+        CLAUSULA 9º: E, assim, por estarem justas e convencionadas, as partes assinam o presente INSTRUMENTO PARTICULAR DE CONTRATO DE LOCAÇÃO RESIDENCIAL em 2 vias de igual teor, juntamente das duas testemunhas abaixo, a tudo presentes.
+
+        São Paulo, ${formatarData(new Date().toISOString().split('T')[0])}.
+
+        _______________________________
+        Proprietário(a)
+
+        _______________________________
+        Inquilino(a)
+    `;
+
+    
+    doc.setFontSize(18); 
+    doc.setFont("helvetica", "bold");
+    doc.text("Contrato de Locação", 10, 10); 
+    doc.setFont("helvetica", "normal");
+
+   
+    const lines = doc.splitTextToSize(contrato, 180);
+
+   
+    let y = 20; 
+    for (let i = 0; i < lines.length; i++) {
+        if (y > 280) { 
+            doc.addPage();
+            y = 10; 
+        }
+        doc.text(lines[i], 10, y);
+        y += 10; 
+    }
+
+
+    doc.save('contrato_locacao.pdf');
+}
+
+
+function formatarData(data) {
+    const [ano, mes, dia] = data.split('-');
+    return `${dia}/${mes}/${ano}`;
+}
+    </script>
+</body>
+</html>
