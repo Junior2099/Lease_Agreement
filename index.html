@@ -4,65 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Contrato de Locação</title>
-     <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=t5GRNS5yIsHP&format=png&color=000000">
+    <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=t5GRNS5yIsHP&format=png&color=000000">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 </head>
 <body>
     <style>
         body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
-.container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-h1 {
-    text-align: center;
-    color: #333;
-}
+        h1 {
+            text-align: center;
+            color: #333;
+        }
 
-form {
-    display: flex;
-    flex-direction: column;
-}
+        h2 {
+            color: #444;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
 
-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
+        form {
+            display: flex;
+            flex-direction: column;
+        }
 
-input {
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
 
-button {
-    padding: 10px;
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
+        input, select {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
 
-button:hover {
-    background-color: #218838;
-}
+        button {
+            padding: 10px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-gerar {
+            background-color: #28a745;
+        }
+
+        .btn-gerar:hover {
+            background-color: #218838;
+        }
+
+        .btn-adicionar {
+            background-color: #17a2b8;
+        }
+
+        .btn-adicionar:hover {
+            background-color: #138496;
+        }
+
+        .btn-remover {
+            background-color: #dc3545;
+        }
+
+        .btn-remover:hover {
+            background-color: #c82333;
+        }
+
+        .inquilino-adicional {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .inquilino-adicional h3 {
+            margin-top: 0;
+            color: #555;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-container input {
+            margin: 0 10px 0 0;
+            width: auto;
+        }
+
+        .comodos-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .comodo-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .comodo-item input {
+            width: 50px;
+            margin-left: 10px;
+            margin-bottom: 0;
+        }
     </style>
     <div class="container">
         <h1>Contrato de Locação</h1>
         <form id="contratoForm">
+            <h2>Dados do Proprietário</h2>
             <label for="nomeProprietario">Nome do Proprietário:</label>
             <input type="text" id="nomeProprietario" required>
 
@@ -72,12 +142,20 @@ button:hover {
             <label for="cpfProprietario">CPF/CIN do Proprietário:</label>
             <input type="text" id="cpfProprietario" required>
 
-            <label for="nomeInquilino">Nome do Inquilino:</label>
+            <h2>Dados do Inquilino Principal</h2>
+            <label for="nomeInquilino">Nome do Inquilino Principal:</label>
             <input type="text" id="nomeInquilino" required>
 
-            <label for="cpfInquilino">CPF/CIN do Inquilino:</label>
+            <label for="cpfInquilino">CPF/CIN do Inquilino Principal:</label>
             <input type="text" id="cpfInquilino" required>
 
+            <div id="inquilinosAdicionais">
+              
+            </div>
+
+            <button type="button" class="btn-adicionar" onclick="adicionarInquilino()">Adicionar Inquilino</button>
+
+            <h2>Dados do Imóvel</h2>
             <label for="enderecoImovel">Endereço do Imóvel:</label>
             <input type="text" id="enderecoImovel" placeholder="Rua, Avenida, etc." required>
 
@@ -90,8 +168,43 @@ button:hover {
             <label for="cep">CEP:</label>
             <input type="text" id="cep" required>
 
-            <label for="prazoLocacao">Prazo de Locação (anos):</label>
-            <input type="number" id="prazoLocacao" required>
+            <h3>Cômodos do Imóvel</h3>
+            <div class="comodos-container">
+                <div class="comodo-item">
+                    <label>Quartos:</label>
+                    <input type="number" id="quartos" min="0" value="1">
+                </div>
+                <div class="comodo-item">
+                    <label>Salas:</label>
+                    <input type="number" id="salas" min="0" value="1">
+                </div>
+                <div class="comodo-item">
+                    <label>Banheiros:</label>
+                    <input type="number" id="banheiros" min="1" value="1">
+                </div>
+                <div class="comodo-item">
+                    <label>Cozinhas:</label>
+                    <input type="number" id="cozinhas" min="0" value="1">
+                </div>
+                <div class="comodo-item">
+                    <label>Vagas de garagem:</label>
+                    <input type="number" id="garagem" min="0" value="0">
+                </div>
+                <div class="comodo-item">
+                    <label>Área de serviço:</label>
+                    <input type="number" id="areaServico" min="0" value="0">
+                </div>
+            </div>
+
+            <h2>Termos do Contrato</h2>
+            <label for="prazoLocacao">Prazo de Locação:</label>
+            <div style="display: flex;">
+                <input type="number" id="prazoLocacao" style="flex: 1; margin-right: 10px;" required>
+                <select id="unidadePrazo" style="flex: 1;">
+                    <option value="meses">Meses</option>
+                    <option value="anos" selected>Anos</option>
+                </select>
+            </div>
 
             <label for="dataInicio">Data de Início:</label>
             <input type="date" id="dataInicio" required>
@@ -102,10 +215,20 @@ button:hover {
             <label for="valorAluguel">Valor do Aluguel (R$):</label>
             <input type="text" id="valorAluguel" required>
 
-            <label for="diaPagamento">Dia de Pagamento:</label>
-            <input type="number" id="diaPagamento" required>
+            <div class="checkbox-container">
+                <input type="checkbox" id="incluiAgua">
+                <label for="incluiAgua">Valor inclui conta de água</label>
+            </div>
 
-            <button type="button" onclick="gerarPDF()">Gerar PDF</button>
+            <div class="checkbox-container">
+                <input type="checkbox" id="incluiLuz">
+                <label for="incluiLuz">Valor inclui conta de luz</label>
+            </div>
+
+            <label for="diaPagamento">Dia de Pagamento:</label>
+            <input type="number" id="diaPagamento" min="1" max="31" required>
+
+            <button type="button" class="btn-gerar" onclick="gerarPDF()">Gerar PDF</button>
         </form>
     </div>
 
@@ -113,96 +236,205 @@ button:hover {
     <script>
         window.jsPDF = window.jspdf.jsPDF;
 
+        $(document).ready(function () {
+            $('#cpfProprietario, #cpfInquilino').mask('000.000.000-00');
+            $('#cep').mask('00000-000');
+            $('#valorAluguel').mask('R$ 000.000,00', { reverse: true });
+            
+           
+            $('#prazoLocacao, #unidadePrazo, #dataInicio').change(calcularDataTermino);
+        });
 
-$(document).ready(function () {
-    $('#cpfProprietario, #cpfInquilino').mask('000.000.000-00');
-    $('#cep').mask('00000-000');
-    $('#valorAluguel').mask('R$ 000.000,00', { reverse: true });
-});
-
-function gerarPDF() {
-    const doc = new jsPDF();
-
-  
-    const nomeProprietario = document.getElementById('nomeProprietario').value;
-    const paisProprietario = document.getElementById('paisProprietario').value;
-    const cpfProprietario = document.getElementById('cpfProprietario').value;
-    const nomeInquilino = document.getElementById('nomeInquilino').value;
-    const cpfInquilino = document.getElementById('cpfInquilino').value;
-    const enderecoImovel = document.getElementById('enderecoImovel').value;
-    const numeroImovel = document.getElementById('numeroImovel').value;
-    const bairro = document.getElementById('bairro').value;
-    const cep = document.getElementById('cep').value;
-    const prazoLocacao = document.getElementById('prazoLocacao').value;
-    const dataInicio = formatarData(document.getElementById('dataInicio').value);
-    const dataTermino = formatarData(document.getElementById('dataTermino').value);
-    const valorAluguel = document.getElementById('valorAluguel').value;
-    const diaPagamento = document.getElementById('diaPagamento').value;
-
-  
-    const contrato = `
-        Os signatários deste instrumento, de um lado ${nomeProprietario}, ${paisProprietario}, Portador do CPF/CIN: ${cpfProprietario}, e do outro lado a ${nomeInquilino}, Portador(a) do CPF/CIN: ${cpfInquilino}, Tem justo contrato na forma de direito, o seguinte, que mutuamente aceitam e outorgam, a saber:
-
-        Clausula 1º: O segundo nomeado, aqui chamado "locatário", sendo inquilino de um imóvel residencial, situado: ${enderecoImovel}, Nº ${numeroImovel}, Bairro: ${bairro}, - SÃO PAULO - CEP: ${cep}, loca-o ao segundo, aqui chamado DE "o locatário".
-
-        Clausula 2º: O prazo de locação é ${prazoLocacao} ANO(s), a partir do dia ${dataInicio}, e tem término no dia ${dataTermino}.
-
-        Clausula 3º: O aluguel é de ${valorAluguel}, que o locatário se compromete a pagar pontualmente todos os dias ${diaPagamento} de cada mês. O locatário comprometesse a pagar conta de água e luz.
-
-        Parágrafo PRIMEIRO- O não pagamento do aluguel, com atraso a longo prazo, o LOCADOR poderá considerar o depósito de antecipação como gozado e dar ordem de despejo ao LOCATÁRIO.
-
-        Parágrafo SEGUNDO- Caso o LOCADOR solicite a desocupação do imóvel, antes do término do contrato, sem justificativa prévia e fora do acordado nas cláusulas, o valor de depósito de antecipação deverá ser restituido ao LOCATÁRIO.
-
-        Clausula 4º: Obriga-se mais o locatário a satisfazer a todas as exigências dos poderes públicos a que der causa e a não transferir este contrato, nem fazer modificações ou transformações no imóvel sem a autorização escrito do locador.
-
-        Clausula 5º O locatário também não poderá sublocar nem emprestar o imóvel, no todo ou em partes sem prévia consentimento por escrito do locador, devendo, no caso de ser dado o consentimento, previdência devida e oportunamente junto aos ocupantes, a fim de que a casa esteja desimpedida no termo do presente contrato.
-
-        Clausula 6º: Em caso demora no pagamento do aluguel, será aplicada uma multa de 10% (Dez por cento) sobre o valor devido e juros mensais de 3% (por cento) do montante devido.
-
-        Clausula 7º: A infração de qualquer das cláusulas do presente contrato, sujeita o infrator à multa de duas vezes o valor do aluguel, tomando-se por base, o último aluguel vencido.
-
-        Clausula 8º: O imóvel terá um reajuste anual conforte a lei.
-
-        CLAUSULA 9º: E, assim, por estarem justas e convencionadas, as partes assinam o presente INSTRUMENTO PARTICULAR DE CONTRATO DE LOCAÇÃO RESIDENCIAL em 2 vias de igual teor, juntamente das duas testemunhas abaixo, a tudo presentes.
-
-        São Paulo, ${formatarData(new Date().toISOString().split('T')[0])}.
-
-        _______________________________
-        Proprietário(a)
-
-        _______________________________
-        Inquilino(a)
-    `;
-
-    
-    doc.setFontSize(18); 
-    doc.setFont("helvetica", "bold");
-    doc.text("Contrato de Locação", 10, 10); 
-    doc.setFont("helvetica", "normal");
-
-   
-    const lines = doc.splitTextToSize(contrato, 180);
-
-   
-    let y = 20; 
-    for (let i = 0; i < lines.length; i++) {
-        if (y > 280) { 
-            doc.addPage();
-            y = 10; 
+        function adicionarInquilino() {
+            const container = document.getElementById('inquilinosAdicionais');
+            const div = document.createElement('div');
+            div.className = 'inquilino-adicional';
+            div.innerHTML = `
+                <h3>Inquilino Adicional</h3>
+                <label for="nomeInquilinoAdicional${container.children.length + 1}">Nome:</label>
+                <input type="text" id="nomeInquilinoAdicional${container.children.length + 1}" required>
+                
+                <label for="cpfInquilinoAdicional${container.children.length + 1}">CPF/CIN:</label>
+                <input type="text" id="cpfInquilinoAdicional${container.children.length + 1}" class="cpf-mask" required>
+                
+                <button type="button" class="btn-remover" onclick="this.parentNode.remove()">Remover Inquilino</button>
+            `;
+            container.appendChild(div);
+            
+            
+            $(`#cpfInquilinoAdicional${container.children.length}`).mask('000.000.000-00');
         }
-        doc.text(lines[i], 10, y);
-        y += 10; 
-    }
 
+        function calcularDataTermino() {
+            const dataInicio = document.getElementById('dataInicio').value;
+            const prazo = document.getElementById('prazoLocacao').value;
+            const unidade = document.getElementById('unidadePrazo').value;
+            
+            if (dataInicio && prazo) {
+                const inicio = new Date(dataInicio);
+                const termino = new Date(inicio);
+                
+                if (unidade === 'meses') {
+                    termino.setMonth(termino.getMonth() + parseInt(prazo));
+                } else {
+                    termino.setFullYear(termino.getFullYear() + parseInt(prazo));
+                }
+                
+           
+                termino.setDate(termino.getDate() - 1);
+                
+                document.getElementById('dataTermino').value = termino.toISOString().split('T')[0];
+            }
+        }
 
-    doc.save('contrato_locacao.pdf');
-}
+        function gerarPDF() {
+            const doc = new jsPDF();
 
+          
+            const nomeProprietario = document.getElementById('nomeProprietario').value;
+            const paisProprietario = document.getElementById('paisProprietario').value;
+            const cpfProprietario = document.getElementById('cpfProprietario').value;
+            const nomeInquilino = document.getElementById('nomeInquilino').value;
+            const cpfInquilino = document.getElementById('cpfInquilino').value;
+            const enderecoImovel = document.getElementById('enderecoImovel').value;
+            const numeroImovel = document.getElementById('numeroImovel').value;
+            const bairro = document.getElementById('bairro').value;
+            const cep = document.getElementById('cep').value;
+            
+       
+            const quartos = document.getElementById('quartos').value;
+            const salas = document.getElementById('salas').value;
+            const banheiros = document.getElementById('banheiros').value;
+            const cozinhas = document.getElementById('cozinhas').value;
+            const garagem = document.getElementById('garagem').value;
+            const areaServico = document.getElementById('areaServico').value;
+            
+            const prazoLocacao = document.getElementById('prazoLocacao').value;
+            const unidadePrazo = document.getElementById('unidadePrazo').value;
+            const dataInicio = formatarData(document.getElementById('dataInicio').value);
+            const dataTermino = formatarData(document.getElementById('dataTermino').value);
+            const valorAluguel = document.getElementById('valorAluguel').value;
+            const diaPagamento = document.getElementById('diaPagamento').value;
+            const incluiAgua = document.getElementById('incluiAgua').checked;
+            const incluiLuz = document.getElementById('incluiLuz').checked;
 
-function formatarData(data) {
-    const [ano, mes, dia] = data.split('-');
-    return `${dia}/${mes}/${ano}`;
-}
+            
+            let inquilinosAdicionais = [];
+            const divsInquilinos = document.querySelectorAll('.inquilino-adicional');
+            divsInquilinos.forEach((div, index) => {
+                const nome = div.querySelector(`input[id^="nomeInquilinoAdicional"]`).value;
+                const cpf = div.querySelector(`input[id^="cpfInquilinoAdicional"]`).value;
+                inquilinosAdicionais.push({ nome, cpf });
+            });
+
+           
+            const descricaoComodos = [];
+            if (quartos > 0) descricaoComodos.push(`${quartos} quarto${quartos > 1 ? 's' : ''}`);
+            if (salas > 0) descricaoComodos.push(`${salas} sala${salas > 1 ? 's' : ''}`);
+            if (banheiros > 0) descricaoComodos.push(`${banheiros} banheiro${banheiros > 1 ? 's' : ''}`);
+            if (cozinhas > 0) descricaoComodos.push(`${cozinhas} cozinha${cozinhas > 1 ? 's' : ''}`);
+            if (garagem > 0) descricaoComodos.push(`${garagem} vaga${garagem > 1 ? 's' : ''} de garagem`);
+            if (areaServico > 0) descricaoComodos.push(`${areaServico} área${areaServico > 1 ? 's' : ''} de serviço`);
+
+            
+            const prazoTexto = unidadePrazo === 'meses' ? `${prazoLocacao} MESES` : `${prazoLocacao} ANO(S)`;
+            
+            let textoInquilinos = `${nomeInquilino}, portador(a) do CPF/CIN: ${cpfInquilino}`;
+            if (inquilinosAdicionais.length > 0) {
+                textoInquilinos += `, juntamente com:\n`;
+                inquilinosAdicionais.forEach(inquilino => {
+                    textoInquilinos += `- ${inquilino.nome}, portador(a) do CPF/CIN: ${inquilino.cpf}\n`;
+                });
+            }
+
+          
+            let textoContasInclusas = '';
+            if (incluiAgua || incluiLuz) {
+                const contas = [];
+                if (incluiAgua) contas.push('água');
+                if (incluiLuz) contas.push('luz');
+                textoContasInclusas = ` O valor do aluguel já inclui a conta de ${contas.join(' e ')}.`;
+            }
+
+            const contrato = `
+                Os signatários deste instrumento, de um lado ${nomeProprietario}, ${paisProprietario}, portador do CPF/CIN: ${cpfProprietario}, doravante denominado PROPRIETÁRIO, e do outro lado ${textoInquilinos}, doravante denominado(s) INQUILINO(S), tem justo contrato na forma de direito, o seguinte, que mutuamente aceitam e outorgam, a saber:
+
+                CLAUSULA 1º: O PROPRIETÁRIO loca ao(s) INQUILINO(S) um imóvel residencial composto por ${descricaoComodos.join(', ')}, situado: ${enderecoImovel}, Nº ${numeroImovel}, Bairro: ${bairro}, - SÃO PAULO - CEP: ${cep}.
+
+                CLAUSULA 2º: O prazo de locação é de ${prazoTexto}, a partir do dia ${dataInicio}, e tem término no dia ${dataTermino}.
+
+                CLAUSULA 3º: O aluguel é de ${valorAluguel}, que o(s) INQUILINO(S) se compromete(m) a pagar pontualmente todos os dias ${diaPagamento} de cada mês.${textoContasInclusas} ${!incluiAgua && !incluiLuz ? 'O(s) INQUILINO(S) compromete(m)-se a pagar conta de água e luz.' : ''}
+
+                Parágrafo PRIMEIRO - O não pagamento do aluguel, com atraso a longo prazo, o PROPRIETÁRIO poderá considerar o depósito de antecipação como gozado e dar ordem de despejo ao(s) INQUILINO(S).
+
+                Parágrafo SEGUNDO - Caso o PROPRIETÁRIO solicite a desocupação do imóvel, antes do término do contrato, sem justificativa prévia e fora do acordado nas cláusulas, o valor de depósito de antecipação deverá ser restituído ao(s) INQUILINO(S).
+
+                CLAUSULA 4º: Obriga-se mais o(s) INQUILINO(S) a satisfazer a todas as exigências dos poderes públicos a que der causa e a não transferir este contrato, nem fazer modificações ou transformações no imóvel sem a autorização escrita do PROPRIETÁRIO.
+
+                CLAUSULA 5º: O(s) INQUILINO(S) também não poderá(ão) sublocar nem emprestar o imóvel, no todo ou em partes sem prévia consentimento por escrito do PROPRIETÁRIO, devendo, no caso de ser dado o consentimento, previdência devida e oportunamente junto aos ocupantes, a fim de que a casa esteja desimpedida no termo do presente contrato.
+
+                CLAUSULA 6º: Em caso demora no pagamento do aluguel, será aplicada uma multa de 10% (Dez por cento) sobre o valor devido e juros mensais de 3% (por cento) do montante devido.
+
+                CLAUSULA 7º: A infração de qualquer das cláusulas do presente contrato, sujeita o infrator à multa de duas vezes o valor do aluguel, tomando-se por base, o último aluguel vencido.
+
+                CLAUSULA 8º: O imóvel terá um reajuste anual conforme a lei.
+
+                CLAUSULA 9º: E, assim, por estarem justas e convencionadas, as partes assinam o presente INSTRUMENTO PARTICULAR DE CONTRATO DE LOCAÇÃO RESIDENCIAL em 2 vias de igual teor, juntamente das duas testemunhas abaixo, a tudo presentes.
+
+                São Paulo, ${formatarData(new Date().toISOString().split('T')[0])}.
+
+                _______________________________
+                ${nomeProprietario}
+                PROPRIETÁRIO(A)
+
+                _______________________________
+                ${nomeInquilino}
+                INQUILINO(A) PRINCIPAL
+            `;
+
+            
+            doc.setFontSize(18);
+            doc.setFont("helvetica", "bold");
+            doc.text("Contrato de Locação", 105, 10, { align: 'center' });
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(12);
+
+            const lines = doc.splitTextToSize(contrato, 180);
+            let y = 20;
+            
+            for (let i = 0; i < lines.length; i++) {
+                if (y > 280) {
+                    doc.addPage();
+                    y = 10;
+                }
+                doc.text(lines[i], 15, y);
+                y += 7;
+            }
+
+           
+            if (inquilinosAdicionais.length > 0) {
+                doc.addPage();
+                doc.setFontSize(14);
+                doc.text("Assinaturas dos Inquilinos Adicionais", 105, 10, { align: 'center' });
+                doc.setFontSize(12);
+                
+                y = 30;
+                inquilinosAdicionais.forEach(inquilino => {
+                    doc.text("_______________________________", 15, y);
+                    doc.text(`${inquilino.nome}`, 15, y + 5);
+                    doc.text("INQUILINO(A) ADICIONAL", 15, y + 10);
+                    y += 30;
+                });
+            }
+
+            doc.save('contrato_locacao.pdf');
+        }
+
+        function formatarData(data) {
+            if (!data) return '';
+            const [ano, mes, dia] = data.split('-');
+            return `${dia}/${mes}/${ano}`;
+        }
     </script>
 </body>
 </html>
